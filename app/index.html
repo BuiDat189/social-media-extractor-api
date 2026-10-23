@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Extractor Pro - Tải Video Không Logo & Tách Nhạc MP3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center p-4 sm:p-6 font-sans">
+
+    <!-- Header -->
+    <div class="w-full max-w-3xl text-center mt-6 mb-8">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-4">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> API Server Đang Hoạt Động
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-sky-300 to-emerald-400 bg-clip-text text-transparent">
+            Social Media Video & Audio Extractor
+        </h1>
+        <p class="text-slate-400 mt-2 text-sm sm:text-base">
+            Tự động bóc tách video HD <b>không watermark</b> và tách nhạc MP3 từ TikTok, YouTube Shorts, Instagram Reels, X, Facebook
+        </p>
+    </div>
+
+    <!-- Main Card -->
+    <div class="w-full max-w-3xl bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-2xl backdrop-blur-xl">
+        <div class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500">
+                    <i class="fa-solid fa-link"></i>
+                </div>
+                <input type="text" id="videoUrl" 
+                    placeholder="Dán link video TikTok, YouTube, Instagram Reels vào đây..." 
+                    class="w-full pl-11 pr-4 py-3.5 bg-slate-950/70 border border-slate-700/80 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all text-sm sm:text-base">
+            </div>
+            <button onclick="handleExtract()" id="btnExtract"
+                class="px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-600 hover:to-sky-600 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50">
+                <i class="fa-solid fa-bolt"></i>
+                <span>Bóc Tách Ngay</span>
+            </button>
+        </div>
+
+        <!-- Sample buttons -->
+        <div class="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+            <span>Dùng thử link mẫu:</span>
+            <button onclick="useSample('https://www.youtube.com/shorts/aqz-KE-bpKQ')" class="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 transition">YouTube Shorts</button>
+            <button onclick="useSample('https://www.tiktok.com/@tiktok/video/7106594312292453678')" class="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 transition">TikTok</button>
+        </div>
+
+        <!-- Loading spinner -->
+        <div id="loading" class="hidden my-10 text-center">
+            <div class="inline-block w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
+            <p class="text-sm text-slate-400 mt-3 animate-pulse">Đang bóc tách link sạch không logo...</p>
+        </div>
+
+        <!-- Error box -->
+        <div id="errorBox" class="hidden mt-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm flex items-start gap-3">
+            <i class="fa-solid fa-circle-exclamation mt-0.5 text-rose-400"></i>
+            <div id="errorMsg">Đã xảy ra lỗi khi bóc tách.</div>
+        </div>
+
+        <!-- Result Box -->
+        <div id="resultBox" class="hidden mt-8 pt-6 border-t border-slate-800">
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- Thumbnail -->
+                <div class="w-full md:w-56 flex-shrink-0">
+                    <img id="resThumb" src="" alt="Thumbnail" class="w-full h-auto rounded-xl border border-slate-700 object-cover shadow-md">
+                    <div id="resBadge" class="mt-2 text-center text-xs font-semibold px-2 py-1 rounded bg-indigo-500/20 text-indigo-300 uppercase tracking-wider">
+                        Platform
+                    </div>
+                </div>
+
+                <!-- Info and Download Buttons -->
+                <div class="flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 id="resTitle" class="font-bold text-slate-100 text-lg leading-snug">Tiêu đề video</h3>
+                        <p id="resAuthor" class="text-xs text-slate-400 mt-1">Tác giả: <span>-</span></p>
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4 text-xs text-slate-300">
+                            <div class="p-2.5 bg-slate-950/60 rounded-lg border border-slate-800/80">
+                                <span class="text-slate-500 block">Thời lượng</span>
+                                <span id="resDuration" class="font-semibold">-</span>
+                            </div>
+                            <div class="p-2.5 bg-slate-950/60 rounded-lg border border-slate-800/80">
+                                <span class="text-slate-500 block">Lượt xem</span>
+                                <span id="resViews" class="font-semibold">-</span>
+                            </div>
+                            <div class="p-2.5 bg-slate-950/60 rounded-lg border border-slate-800/80">
+                                <span class="text-slate-500 block">Lượt thích</span>
+                                <span id="resLikes" class="font-semibold">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                        <a id="btnDownloadVideo" href="#" target="_blank"
+                            class="flex-1 py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl text-center shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition active:scale-95">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Tải Video HD Không Logo</span>
+                        </a>
+                        <a id="btnDownloadAudio" href="#" target="_blank"
+                            class="py-3 px-4 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl text-center border border-slate-700 flex items-center justify-center gap-2 transition">
+                            <i class="fa-solid fa-music"></i>
+                            <span>Tách Nhạc MP3</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-10 text-center text-xs text-slate-500">
+        API Documentation: <a href="/docs" target="_blank" class="text-indigo-400 hover:underline">/docs</a> &bull; RapidAPI Ready &bull; Chạy trên máy nội bộ
+    </div>
+
+    <script>
+        function useSample(url) {
+            document.getElementById('videoUrl').value = url;
+            handleExtract();
+        }
+
+        async function handleExtract() {
+            const url = document.getElementById('videoUrl').value.trim();
+            if (!url) {
+                alert('Vui lòng dán link video cần bóc tách!');
+                return;
+            }
+
+            const btn = document.getElementById('btnExtract');
+            const loading = document.getElementById('loading');
+            const resultBox = document.getElementById('resultBox');
+            const errorBox = document.getElementById('errorBox');
+
+            btn.disabled = true;
+            loading.classList.remove('hidden');
+            resultBox.classList.add('hidden');
+            errorBox.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/v1/extract', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data.detail || data.error || 'Không thể bóc tách video từ link này.');
+                }
+
+                // Render results
+                document.getElementById('resTitle').innerText = data.title || 'Video không có tiêu đề';
+                document.getElementById('resAuthor').innerText = 'Tác giả: ' + (data.author || 'N/A');
+                document.getElementById('resDuration').innerText = data.duration ? data.duration + ' giây' : 'N/A';
+                document.getElementById('resViews').innerText = data.view_count ? data.view_count.toLocaleString() : 'N/A';
+                document.getElementById('resLikes').innerText = data.like_count ? data.like_count.toLocaleString() : 'N/A';
+                document.getElementById('resThumb').src = data.thumbnail || 'https://via.placeholder.com/300x200?text=No+Thumbnail';
+                document.getElementById('resBadge').innerText = data.platform;
+
+                const btnVid = document.getElementById('btnDownloadVideo');
+                if (data.best_video_no_watermark) {
+                    btnVid.href = data.best_video_no_watermark;
+                    btnVid.classList.remove('hidden');
+                } else {
+                    btnVid.classList.add('hidden');
+                }
+
+                const btnAud = document.getElementById('btnDownloadAudio');
+                if (data.best_audio) {
+                    btnAud.href = data.best_audio;
+                    btnAud.classList.remove('hidden');
+                } else {
+                    btnAud.classList.add('hidden');
+                }
+
+                resultBox.classList.remove('hidden');
+            } catch (err) {
+                document.getElementById('errorMsg').innerText = err.message;
+                errorBox.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                loading.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

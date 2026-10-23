@@ -1,0 +1,620 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Universal Social Media Video & Audio Extractor API",
+    "description": "High-performance API to extract direct high-quality video (No Watermark), audio/soundtracks, and metadata from TikTok, Instagram Reels, YouTube Shorts, Twitter/X, Facebook, and more.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/supported-platforms": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Get Supported Platforms",
+        "operationId": "get_supported_platforms_api_v1_supported_platforms_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/extract": {
+      "post": {
+        "tags": [
+          "Universal Extractor"
+        ],
+        "summary": "Extract Media",
+        "description": "Extract video, audio, and metadata from any supported social media URL.\nReturns direct CDN URLs without watermarks whenever available.",
+        "operationId": "extract_media_api_v1_extract_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtractRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tiktok": {
+      "post": {
+        "tags": [
+          "Dedicated Platform Endpoints"
+        ],
+        "summary": "Extract Tiktok",
+        "description": "Specific endpoint for TikTok videos (returns clean video without watermark).",
+        "operationId": "extract_tiktok_api_v1_tiktok_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtractRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/instagram": {
+      "post": {
+        "tags": [
+          "Dedicated Platform Endpoints"
+        ],
+        "summary": "Extract Instagram",
+        "description": "Specific endpoint for Instagram Reels, Posts, and Videos.",
+        "operationId": "extract_instagram_api_v1_instagram_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtractRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/youtube": {
+      "post": {
+        "tags": [
+          "Dedicated Platform Endpoints"
+        ],
+        "summary": "Extract Youtube",
+        "description": "Specific endpoint for YouTube Shorts and YouTube videos.",
+        "operationId": "extract_youtube_api_v1_youtube_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtractRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AudioStream": {
+        "properties": {
+          "quality": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quality",
+            "description": "Audio bitrate or quality"
+          },
+          "extension": {
+            "type": "string",
+            "title": "Extension",
+            "description": "Audio format (mp3, m4a, etc.)"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "Direct downloadable audio URL"
+          },
+          "filesize": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filesize"
+          }
+        },
+        "type": "object",
+        "required": [
+          "extension",
+          "url"
+        ],
+        "title": "AudioStream"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": false
+          },
+          "error": {
+            "type": "string",
+            "title": "Error"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse"
+      },
+      "ExtractRequest": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "The direct URL of the video (TikTok, Instagram, YouTube, etc.)",
+            "examples": [
+              "https://www.tiktok.com/@scout2015/video/6718335390845095173"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "ExtractRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "MediaResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "platform": {
+            "type": "string",
+            "title": "Platform",
+            "description": "Detected platform (tiktok, instagram, youtube, twitter, facebook, etc.)"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Original video ID"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title",
+            "description": "Title or caption of the video"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Full description/caption"
+          },
+          "author": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author",
+            "description": "Uploader or creator username"
+          },
+          "author_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Url",
+            "description": "Uploader profile URL"
+          },
+          "duration": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration",
+            "description": "Video duration in seconds"
+          },
+          "thumbnail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Thumbnail",
+            "description": "High-resolution thumbnail URL"
+          },
+          "view_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "View Count"
+          },
+          "like_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Like Count"
+          },
+          "comment_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment Count"
+          },
+          "best_video_no_watermark": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Video No Watermark",
+            "description": "Direct URL of the best quality video without watermark"
+          },
+          "best_audio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Audio",
+            "description": "Direct URL of the best audio/soundtrack"
+          },
+          "videos": {
+            "items": {
+              "$ref": "#/components/schemas/VideoStream"
+            },
+            "type": "array",
+            "title": "Videos",
+            "default": []
+          },
+          "audios": {
+            "items": {
+              "$ref": "#/components/schemas/AudioStream"
+            },
+            "type": "array",
+            "title": "Audios",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "platform",
+          "id"
+        ],
+        "title": "MediaResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VideoStream": {
+        "properties": {
+          "quality": {
+            "type": "string",
+            "title": "Quality",
+            "description": "Resolution or quality label (e.g. 1080p, 720p, no-watermark)"
+          },
+          "format_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Format Id"
+          },
+          "extension": {
+            "type": "string",
+            "title": "Extension",
+            "description": "Container format (mp4, webm)"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "Direct downloadable video URL"
+          },
+          "filesize": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filesize",
+            "description": "Filesize in bytes if available"
+          },
+          "has_audio": {
+            "type": "boolean",
+            "title": "Has Audio",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "quality",
+          "extension",
+          "url"
+        ],
+        "title": "VideoStream"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Universal Extractor",
+      "description": "Extract media from any supported social platform"
+    },
+    {
+      "name": "Dedicated Platform Endpoints",
+      "description": "Platform-specific shortcuts"
+    },
+    {
+      "name": "System",
+      "description": "Status and supported platform info"
+    }
+  ]
+}
