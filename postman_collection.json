@@ -1,0 +1,111 @@
+{
+  "info": {
+    "name": "Universal Social Media Video & Audio Extractor API",
+    "description": "High-performance API to extract direct high-quality video (No Watermark), audio/soundtracks, and metadata from TikTok, Instagram Reels, YouTube Shorts, Twitter/X, Facebook, and more.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health Check / Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://social-media-extractor-api.onrender.com/",
+              "protocol": "https",
+              "host": ["social-media-extractor-api", "onrender", "com"],
+              "path": [""]
+            }
+          }
+        },
+        {
+          "name": "Get Supported Platforms",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://social-media-extractor-api.onrender.com/api/v1/supported-platforms",
+              "protocol": "https",
+              "host": ["social-media-extractor-api", "onrender", "com"],
+              "path": ["api", "v1", "supported-platforms"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extractors",
+      "item": [
+        {
+          "name": "Universal Extract (Any URL)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://www.youtube.com/shorts/aqz-KE-bpKQ\"\n}"
+            },
+            "url": {
+              "raw": "https://social-media-extractor-api.onrender.com/api/v1/extract",
+              "protocol": "https",
+              "host": ["social-media-extractor-api", "onrender", "com"],
+              "path": ["api", "v1", "extract"]
+            }
+          }
+        },
+        {
+          "name": "TikTok Extract (No Watermark)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://www.tiktok.com/@tiktok/video/7106594312292453678\"\n}"
+            },
+            "url": {
+              "raw": "https://social-media-extractor-api.onrender.com/api/v1/tiktok",
+              "protocol": "https",
+              "host": ["social-media-extractor-api", "onrender", "com"],
+              "path": ["api", "v1", "tiktok"]
+            }
+          }
+        },
+        {
+          "name": "YouTube Shorts Extract",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://www.youtube.com/shorts/aqz-KE-bpKQ\"\n}"
+            },
+            "url": {
+              "raw": "https://social-media-extractor-api.onrender.com/api/v1/youtube",
+              "protocol": "https",
+              "host": ["social-media-extractor-api", "onrender", "com"],
+              "path": ["api", "v1", "youtube"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
